@@ -1,6 +1,8 @@
 const express = require('express');
 const multer = require('multer');
 const sharp = require('sharp');
+sharp.cache(false);
+sharp.concurrency(1);
 const Tesseract = require('tesseract.js');
 const fs = require('fs');
 const cors = require('cors');
@@ -45,9 +47,17 @@ async function analyzeThumbnail(imagePath) {
 
   const convertedPath = imagePath + '.png';
 
-  await sharp(imagePath)
-    .png()
-    .toFile(convertedPath);
+  await sharp(imagePath, {
+  density: 300,
+  limitInputPixels: false
+})
+  .rotate()
+  .png({
+    quality: 100,
+    compressionLevel: 0,
+    force: true
+  })
+  .toFile(convertedPath);
 
   const image = sharp(convertedPath);
 
