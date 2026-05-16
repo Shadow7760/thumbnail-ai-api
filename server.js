@@ -48,10 +48,14 @@ async function analyzeThumbnail(imagePath) {
   const convertedPath = imagePath + '.png';
 
   await sharp(imagePath, {
-  density: 300,
+  failOn: 'none',
   limitInputPixels: false
 })
   .rotate()
+  .resize(1280, 720, {
+    fit: 'inside',
+    withoutEnlargement: true
+  })
   .png({
     quality: 100,
     compressionLevel: 0,
